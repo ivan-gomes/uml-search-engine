@@ -5,6 +5,8 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.converters.PathConverter;
 import com.github.ivangomes.elasticsearch.ElasticsearchConfig;
 import lombok.SneakyThrows;
+import org.apache.lucene.index.IndexNotFoundException;
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
@@ -31,12 +33,16 @@ public class InitializeEsIndex implements Runnable {
     public void run() {
         ActionResponse response;
         try (TransportClient client = ElasticsearchConfig.getClient()) {
-            DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest(ElasticsearchConfig.INDEX);
-            response = client.admin().indices().delete(deleteIndexRequest).actionGet();
-            System.out.println(response);
+            try {
+                DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest(ElasticsearchConfig.INDEX);
+                response = client.admin().indices().delete(deleteIndexRequest).actionGet();
+                System.out.println("[INFO] Deleted index: " + response);
+            } catch (ElasticsearchException ignored) {
+                System.out.println("[INFO] Index does not already exist.");
+            }
             CreateIndexRequest createIndexRequest = new CreateIndexRequest(ElasticsearchConfig.INDEX);
             response = client.admin().indices().create(createIndexRequest).actionGet();
-            System.out.println(response);
+            System.out.println("[INFO] Created index: " + response);
             PutMappingRequest putMappingRequest = new PutMappingRequest(ElasticsearchConfig.INDEX);
             putMappingRequest.type(ElasticsearchConfig.TYPE);
 
@@ -48,7 +54,7 @@ public class InitializeEsIndex implements Runnable {
             Path pathMapping = Paths.get(mappingUrl.toURI());
             putMappingRequest.source(new String(Files.readAllBytes(pathMapping)), XContentType.JSON);
             response = client.admin().indices().putMapping(putMappingRequest).actionGet();
-            System.out.println(response);
+            System.out.println("[INFO] Created mapping: " + response);
             try (Stream<Path> paths = Files.walk(directory)) {
                 paths.filter(Files::isRegularFile).forEach(file -> {
                     if (!file.getFileName().toString().endsWith(".json")) {
