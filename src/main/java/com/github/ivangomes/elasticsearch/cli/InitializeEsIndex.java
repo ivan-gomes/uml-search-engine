@@ -29,7 +29,7 @@ public class InitializeEsIndex implements Runnable {
     @Parameter(names = {"--dir", "-d"}, required = true, converter = PathConverter.class)
     private Path directory;
 
-    @SneakyThrows({IOException.class, URISyntaxException.class})
+    @SneakyThrows(IOException.class)
     public void run() {
         ActionResponse response;
         try (TransportClient client = ElasticsearchConfig.getClient()) {
