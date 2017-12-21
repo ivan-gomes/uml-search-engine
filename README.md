@@ -69,6 +69,7 @@ In order to achieve this end, existing technologies like Elasticsearch and open 
 * Initialization of Part 2
 #### Steps
 * In Terminal, execute `java -cp "$REPO/build/libs/uml-search-engine-1.0.0-all.jar" com.github.ivangomes.elementrank.cli.QueryIndices --directory $OUTPUT_DIR --query "queryWord" --query "query phrase" ...`
+    * Example queries: `-q "APS" -q "phasing" -q "duration analysis" -q "calculate centroid" -q "select filter" -q "take exposure" -q "acquire lock" -q "offset" -q "send offset" -q "telescope offset" -q "pupil registration" -q "send ack" -q "zernike" -q "close loop"`
 * `$OUTPUT_DIR/elementrank_index.json` is the index used to cache the links between elements and the ElementRank of each element.
 * `$OUTPUT_DIR/hits_*.json` is the hits for the provided search query with calculated Elasticsearch, ElementRank, and combined scores.
 * `$OUTPUT_DIR/test_*.groovy` is a macro that can be used with Cameo Systems Modeler to present the search results.
