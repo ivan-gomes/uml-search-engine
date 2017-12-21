@@ -5,7 +5,6 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.converters.PathConverter;
 import com.github.ivangomes.elasticsearch.ElasticsearchConfig;
 import lombok.SneakyThrows;
-import org.apache.lucene.index.IndexNotFoundException;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.DocWriteResponse;
@@ -18,11 +17,12 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentType;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Scanner;
 import java.util.stream.Stream;
 
 public class InitializeEsIndex implements Runnable {
@@ -46,13 +46,12 @@ public class InitializeEsIndex implements Runnable {
             PutMappingRequest putMappingRequest = new PutMappingRequest(ElasticsearchConfig.INDEX);
             putMappingRequest.type(ElasticsearchConfig.TYPE);
 
-            URL mappingUrl = InitializeEsIndex.class.getResource("/mapping.json");
-            if (mappingUrl == null) {
+            InputStream mappingInputStream = InitializeEsIndex.class.getResourceAsStream("/mapping.json");
+            if (mappingInputStream == null) {
                 System.err.println("[ERROR] Mapping resource not found.");
                 System.exit(1);
             }
-            Path pathMapping = Paths.get(mappingUrl.toURI());
-            putMappingRequest.source(new String(Files.readAllBytes(pathMapping)), XContentType.JSON);
+            putMappingRequest.source(new Scanner(mappingInputStream, "UTF-8").useDelimiter("\\A").next(), XContentType.JSON);
             response = client.admin().indices().putMapping(putMappingRequest).actionGet();
             System.out.println("[INFO] Created mapping: " + response);
             try (Stream<Path> paths = Files.walk(directory)) {
