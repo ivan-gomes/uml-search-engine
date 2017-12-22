@@ -87,3 +87,14 @@ In order to achieve this end, existing technologies like Elasticsearch and open 
 * Tools -> Macros -> Create Macro...
 * Macro Language -> Groovy
 * Copy paste contents of `$OUTPUT_DIR/test_*.groovy` -> Run
+
+## Classes
+* [ElasticsearchConfig](src/main/java/com/github/ivangomes/elasticsearch/ElasticsearchConfig.java) contains connection information to the Elasticsearch index. Future work includes abstracting this out to a properties file.
+* [ElasticsearchSearcher](src/main/java/com/github/ivangomes/elasticsearch/ElasticsearchSearcher.java) is the function to search the Elasticsearch index for a query
+* [TypeFieldsQuery](src/main/java/com/github/ivangomes/elasticsearch/TypeFieldsQuery.java) is the function to get all the fields of an Elasticsearch type that contain links to other elements
+* [InitializeEsIndex](src/main/java/com/github/ivangomes/elasticsearch/cli/InitializeEsIndex.java) is the command line interface to populate the Elasticsearch index from a set of JSON files
+* [PageRankIndex](src/main/java/com/github/ivangomes/pagerank/PageRankIndex.java) is the index used to store all the pages, their incoming/outgoing links, and their PageRank
+* [PageRankCalculator](src/main/java/com/github/ivangomes/pagerank/PageRankCalculator.java) is the function that implements Google's PageRank algorithm taking a PageRankIndex as an input
+* [ElementRankIndex](src/main/java/com/github/ivangomes/elementrank/ElementRankIndex.java) extends PageRankIndex and is currently empty as no specializations were necessary (yet) to adapt the index for use with elements
+* [ElementRankIndexBuilder](src/main/java/com/github/ivangomes/elementrank/ElementRankIndexBuilder.java) is the function to build an ElementRankIndex from the elements in Elasticsearch
+* [QueryIndices](src/main/java/com/github/ivangomes/elementrank/cli/QueryIndices.java) is the command line interface to search the Elasticsearch and ElementRank indices for queries
