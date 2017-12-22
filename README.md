@@ -15,6 +15,8 @@ In order to achieve this end, existing technologies like Elasticsearch and open 
 
 ## Quickstart
 
+### Walkthrough Video
+[![Quickstart Walkthrough](https://i.ytimg.com/vi/J_4uAA42lLc/hqdefault.jpg)](https://www.youtube.com/watch?v=J_4uAA42lLc "UML (SysML/BMPN) Search Engine Walkthrough")
 ### Part 1: Export Model as JSON (OPTIONAL)
 #### Alternative
 * Pre-exported model in `$REPO/resources/TMT-json.zip`
